@@ -15,6 +15,12 @@ Modelo:
 
 ---
 
+## 2026-11-26 · projeto · migrations fora do git
+- **O que mudou:** migration não vai mais para o git. O `.gitignore` ignora os arquivos de `migrations/` (menos o `__init__.py`); o hook `pre-commit`, o `scripts/check.py` e o CI recusam migration; as que estavam no repositório saíram do git. Os testes montam as tabelas direto dos models. A proteção dos ledgers saiu da migration 0002 e passou para o `post_migrate`, com `@append_only` no model. O hook `pre-push` ganhou permissão de execução (sem ela o git o ignorava).
+- **Por quê:** combinado do time: migration nunca sobe, e o agente nunca roda `makemigrations` nem `migrate` ([ADR 0009](adr/0009-migrations-out-of-git.md)).
+- **Pendente / atenção:** no próximo `git pull`, as migrations que estavam no git somem da sua pasta; o banco local não muda. Para os hooks rodarem: `git config core.hooksPath .githooks`, uma vez por clone. `pytest` não rodou na máquina de quem entregou (sem Postgres); conferir no CI.
+- **Autor:** Walter (+ IA)
+
 ## 2026-11-26 · projeto · app de passivo da arquitetura Glina
 - **O que mudou:** repositório criado a partir do `maud-boilerplate` como o "App de passivo" do desenho da arquitetura Glina. Nome, banco (`maud_glina_liability`) e portas próprias (API 8001, Postgres 5434); `docs/context.md`, glossário e README escritos a partir do desenho. Nenhum módulo de negócio ainda.
 - **Por quê:** a arquitetura fechada com o time tem três repositórios (porteiro, app de passivo, app de gestão), com passivo e gestão separados desde o começo ([ADR 0008](adr/0008-liability-app.md)).
